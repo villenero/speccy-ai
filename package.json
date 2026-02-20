@@ -1,0 +1,17 @@
+{
+  "name": "zx-emul",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Pixel-perfect ZX Spectrum 48K emulator for AI game analysis",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1"
+  }
+}

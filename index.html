@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZX Spectrum 48K Emulator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #1a1a2e;
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      color: #c0c0ff;
+      margin-bottom: 16px;
+    }
+
+    #screen-container {
+      border: 3px solid #444;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #screen {
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      width: 704px;   /* 352 * 2 */
+      height: 576px;  /* 288 * 2 */
+    }
+
+    .controls {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      background: #2a2a4a;
+      color: #c0c0ff;
+      border: 1px solid #555;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    button:hover { background: #3a3a6a; }
+    button:active { background: #4a4aba; }
+    button.active { background: #4a4aba; border-color: #88f; }
+
+    input[type="file"] { display: none; }
+
+    .status {
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    .capture-panel {
+      margin-top: 16px;
+      padding: 12px;
+      background: #222244;
+      border: 1px solid #444;
+      border-radius: 4px;
+      width: 704px;
+      font-size: 0.8rem;
+    }
+
+    .capture-panel h3 {
+      color: #c0c0ff;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .capture-panel .row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    #log {
+      margin-top: 8px;
+      max-height: 120px;
+      overflow-y: auto;
+      font-size: 0.7rem;
+      color: #aaa;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>ZX Spectrum 48K</h1>
+
+  <div id="screen-container">
+    <canvas id="screen"></canvas>
+  </div>
+
+  <div class="controls">
+    <button id="btn-run">Run</button>
+    <button id="btn-pause">Pause</button>
+    <button id="btn-reset">Reset</button>
+    <button id="btn-load-snap">Load Snapshot</button>
+    <input type="file" id="file-snap" accept=".sna,.z80,.SNA,.Z80" />
+    <button id="btn-rom-toggle">ROM: Original</button>
+  </div>
+
+  <div class="status" id="status">Initializing...</div>
+
+  <div class="capture-panel">
+    <h3>AI Capture Tools</h3>
+    <div class="row">
+      <button id="btn-capture-frame">Capture Frame (PNG)</button>
+      <button id="btn-capture-state">Capture State (JSON)</button>
+      <button id="btn-capture-text">Detect Text</button>
+    </div>
+    <div class="row">
+      <button id="btn-capture-sprites">Detect Sprites</button>
+      <button id="btn-capture-tiles">Detect Tiles</button>
+      <button id="btn-record-toggle">Start Recording</button>
+    </div>
+    <div class="row">
+      <button id="btn-turbo-capture">Turbo: 100 frames</button>
+      <button id="btn-mem-search">Memory Search</button>
+    </div>
+    <div id="log"></div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
