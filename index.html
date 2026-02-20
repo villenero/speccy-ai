@@ -11,133 +11,430 @@
       background: #1a1a2e;
       color: #e0e0e0;
       font-family: 'Courier New', monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 12px 20px;
     }
 
     h1 {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #c0c0ff;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      text-align: center;
     }
 
+    /* --- Two-column fluid layout --- */
+    .app-layout {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      align-items: flex-start;
+    }
+
+    .left-panel {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Drag handle between panels */
+    .panel-resizer {
+      width: 6px;
+      cursor: col-resize;
+      background: transparent;
+      flex-shrink: 0;
+      position: relative;
+      margin: 0 2px;
+    }
+
+    .panel-resizer::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 1px;
+      width: 4px;
+      height: 40px;
+      transform: translateY(-50%);
+      background: #444;
+      border-radius: 2px;
+      transition: background 0.15s;
+    }
+
+    .panel-resizer:hover::after { background: #88f; }
+
+    .right-panel {
+      width: 260px;
+      min-width: 180px;
+      max-width: 500px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* --- Screen --- */
     #screen-container {
+      position: relative;
       border: 3px solid #444;
       border-radius: 4px;
       overflow: hidden;
       background: #000;
+      width: 100%;
+    }
+
+    #picker-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
 
     #screen {
       display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 352 / 288;
       image-rendering: pixelated;
       image-rendering: crisp-edges;
-      width: 704px;   /* 352 * 2 */
-      height: 576px;  /* 288 * 2 */
     }
 
-    .controls {
-      margin-top: 16px;
+    #screen.fullscreen {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      aspect-ratio: auto;
+    }
+
+    /* --- Transport bar (below screen) --- */
+    .transport-bar {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+      align-items: center;
+    }
+
+    .status {
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: #888;
+    }
+
+    /* --- Buttons & selects (global) --- */
+    select {
+      background: #2a2a4a;
+      color: #c0c0ff;
+      border: 1px solid #555;
+      padding: 6px 10px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border-radius: 3px;
     }
 
     button {
       background: #2a2a4a;
       color: #c0c0ff;
       border: 1px solid #555;
-      padding: 8px 16px;
+      padding: 7px 14px;
       font-family: inherit;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       border-radius: 3px;
+      white-space: nowrap;
     }
 
     button:hover { background: #3a3a6a; }
     button:active { background: #4a4aba; }
     button.active { background: #4a4aba; border-color: #88f; }
 
+    button .ico { margin-right: 5px; display: inline-block; }
+
+    button svg {
+      width: 14px;
+      height: 14px;
+      vertical-align: -2px;
+      margin-right: 4px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     input[type="file"] { display: none; }
 
-    .status {
-      margin-top: 12px;
-      font-size: 0.75rem;
-      color: #888;
-    }
-
-    .capture-panel {
-      margin-top: 16px;
-      padding: 12px;
+    /* --- Right panel sections --- */
+    .panel-section {
       background: #222244;
-      border: 1px solid #444;
+      border: 1px solid #3a3a5a;
       border-radius: 4px;
-      width: 704px;
-      font-size: 0.8rem;
-    }
-
-    .capture-panel h3 {
-      color: #c0c0ff;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-    }
-
-    .capture-panel .row {
+      padding: 10px;
       display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
-      align-items: center;
+      flex-direction: column;
+      gap: 6px;
     }
 
+    .panel-section h3 {
+      color: #c0c0ff;
+      font-size: 0.8rem;
+      margin-bottom: 2px;
+    }
+
+    .panel-section button {
+      width: 100%;
+      text-align: left;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+    }
+
+    /* --- Log --- */
     #log {
-      margin-top: 8px;
-      max-height: 120px;
+      margin-top: 4px;
+      max-height: 150px;
       overflow-y: auto;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: #aaa;
       white-space: pre-wrap;
+      line-height: 1.4;
+    }
+
+    /* --- Gallery --- */
+    .gallery-toolbar {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .gallery-toolbar span {
+      color: #c0c0ff;
+      font-size: 0.75rem;
+      margin-right: auto;
+    }
+
+    .gallery-toolbar button {
+      padding: 3px 8px;
+      font-size: 0.65rem;
+      width: auto;
+    }
+
+    #gallery-mosaic {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .gallery-item {
+      position: relative;
+      display: inline-block;
+    }
+
+    .gallery-item canvas {
+      cursor: pointer;
+      border: 2px solid transparent;
+      border-radius: 2px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      display: block;
+    }
+
+    .gallery-item.selected canvas { border-color: #88f; }
+    .gallery-item canvas:hover { border-color: #668; }
+    .gallery-item.selected canvas:hover { border-color: #aaf; }
+
+    .gallery-badge {
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      width: 16px;
+      height: 16px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .gallery-badge svg {
+      width: 10px;
+      height: 10px;
+      margin: 0;
+    }
+
+    /* --- Virtual Keyboard Panel --- */
+    #vkbd-panel {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      background: #111;
+      border: 2px solid #555;
+      border-radius: 6px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      user-select: none;
+      resize: horizontal;
+      overflow: hidden;
+      min-width: 340px;
+      max-width: 95vw;
+    }
+
+    #vkbd-panel.visible { display: block; }
+
+    .vkbd-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: #2a2a4a;
+      border-bottom: 1px solid #444;
+      border-radius: 4px 4px 0 0;
+      cursor: grab;
+      font-size: 0.8rem;
+      color: #c0c0ff;
+    }
+
+    .vkbd-titlebar:active { cursor: grabbing; }
+
+    .vkbd-close {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+    }
+
+    .vkbd-close:hover { color: #f66; background: none; }
+
+    #vkbd-mode {
+      font-size: 0.7rem;
+      text-align: center;
+      padding: 3px 0;
+      color: #888;
+      background: #1a1a2e;
+    }
+
+    #vkbd-keys {
+      position: relative;
+      line-height: 0;
+    }
+
+    #vkbd-keys img {
+      width: 100%;
+      display: block;
+      border-radius: 0 0 4px 4px;
+    }
+
+    .vkbd-hitbox {
+      position: absolute;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.1s;
+    }
+
+    .vkbd-hitbox:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .vkbd-hitbox.pressed {
+      background: rgba(120, 160, 255, 0.35);
+    }
+
+    .vkbd-hitbox.shift-active {
+      background: rgba(120, 160, 255, 0.25);
+      box-shadow: inset 0 0 8px rgba(100,140,255,0.6);
+    }
+
+    /* --- Responsive: stack on narrow screens --- */
+    @media (max-width: 768px) {
+      .app-layout {
+        flex-direction: column;
+      }
+      .right-panel {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
   <h1>ZX Spectrum 48K</h1>
 
-  <div id="screen-container">
-    <canvas id="screen"></canvas>
+  <div class="app-layout">
+    <!-- Left: Screen + transport -->
+    <div class="left-panel">
+      <div id="screen-container">
+        <canvas id="screen"></canvas>
+        <canvas id="picker-overlay" width="352" height="288"></canvas>
+      </div>
+
+      <div class="transport-bar">
+        <button id="btn-play-pause"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20" fill="currentColor" stroke="none"/></svg>Play</button>
+        <button id="btn-step-frame" title="Advance 1 frame (1/50s)"><svg viewBox="0 0 24 24"><polygon points="4,4 14,12 4,20" fill="currentColor" stroke="none"/><rect x="16" y="4" width="3" height="16" fill="currentColor" stroke="none"/></svg>Step</button>
+        <button id="btn-reset"><svg viewBox="0 0 24 24"><path d="M1,4 V10 H7"/><path d="M3.51,15a9,9 0 1,0 2.13-9.36L1,10"/></svg>Reset</button>
+        <select id="select-scale">
+          <option value="auto" selected>Auto</option>
+          <option value="1">1x</option>
+          <option value="2">2x</option>
+          <option value="4">4x</option>
+          <option value="8">8x</option>
+          <option value="full">Full Screen</option>
+        </select>
+      </div>
+
+      <div class="status" id="status">Initializing...</div>
+    </div>
+
+    <!-- Drag handle -->
+    <div class="panel-resizer" id="panel-resizer"></div>
+
+    <!-- Right: sidebar controls -->
+    <div class="right-panel">
+      <div class="panel-section">
+        <button id="btn-load-snap"><svg viewBox="0 0 24 24"><path d="M21,15v4a2,2 0 0,1-2,2H5a2,2 0 0,1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Load Snapshot</button>
+        <input type="file" id="file-snap" accept=".sna,.z80,.SNA,.Z80,.tap,.TAP,.tzx,.TZX" />
+        <button id="btn-rom-toggle"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/></svg>ROM: Original</button>
+        <button id="btn-vkbd"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8.01"/><line x1="10" y1="8" x2="10" y2="8.01"/><line x1="14" y1="8" x2="14" y2="8.01"/><line x1="18" y1="8" x2="18" y2="8.01"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="10" y1="12" x2="10" y2="12.01"/><line x1="14" y1="12" x2="14" y2="12.01"/><line x1="18" y1="12" x2="18" y2="12.01"/><line x1="8" y1="16" x2="16" y2="16"/></svg>Virtual Keyboard</button>
+      </div>
+
+      <div class="panel-section">
+        <h3>AI Capture Tools</h3>
+        <button id="btn-capture-frame"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg>Capture Frame</button>
+        <button id="btn-save-snapshot"><svg viewBox="0 0 24 24"><path d="M19,21H5a2,2 0 0,1-2-2V5a2,2 0 0,1,2-2h11l5,5v11a2,2 0 0,1-2,2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Save Snapshot</button>
+        <button id="btn-capture-text"><svg viewBox="0 0 24 24"><polyline points="4,7 4,4 20,4 20,7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>Detect Text</button>
+        <button id="btn-capture-sprites"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Detect Sprites</button>
+        <button id="btn-capture-tiles"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>Detect Tiles</button>
+        <button id="btn-record-toggle"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/></svg>Start Recording</button>
+        <button id="btn-turbo-capture"><svg viewBox="0 0 24 24"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10" fill="currentColor" stroke="none"/></svg>Turbo: 100 frames</button>
+        <button id="btn-mem-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Memory Search</button>
+        <button id="btn-pick-element"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="6"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/></svg>Pick Element</button>
+        <div id="log"></div>
+      </div>
+
+      <div class="panel-section" id="gallery-panel">
+        <div class="gallery-toolbar">
+          <span id="gallery-count">0 captures</span>
+          <button id="btn-select-all">All</button>
+          <button id="btn-select-none">None</button>
+          <button id="btn-restore-snapshot">Restore</button>
+          <button id="btn-download-selected">Download</button>
+          <button id="btn-clear-gallery">Clear</button>
+        </div>
+        <div id="gallery-mosaic"></div>
+      </div>
+    </div>
   </div>
 
-  <div class="controls">
-    <button id="btn-run">Run</button>
-    <button id="btn-pause">Pause</button>
-    <button id="btn-reset">Reset</button>
-    <button id="btn-load-snap">Load Snapshot</button>
-    <input type="file" id="file-snap" accept=".sna,.z80,.SNA,.Z80" />
-    <button id="btn-rom-toggle">ROM: Original</button>
-  </div>
-
-  <div class="status" id="status">Initializing...</div>
-
-  <div class="capture-panel">
-    <h3>AI Capture Tools</h3>
-    <div class="row">
-      <button id="btn-capture-frame">Capture Frame (PNG)</button>
-      <button id="btn-capture-state">Capture State (JSON)</button>
-      <button id="btn-capture-text">Detect Text</button>
+  <!-- Floating virtual keyboard -->
+  <div id="vkbd-panel">
+    <div class="vkbd-titlebar">
+      <span>ZX Spectrum 48K</span>
+      <button class="vkbd-close">&times;</button>
     </div>
-    <div class="row">
-      <button id="btn-capture-sprites">Detect Sprites</button>
-      <button id="btn-capture-tiles">Detect Tiles</button>
-      <button id="btn-record-toggle">Start Recording</button>
-    </div>
-    <div class="row">
-      <button id="btn-turbo-capture">Turbo: 100 frames</button>
-      <button id="btn-mem-search">Memory Search</button>
-    </div>
-    <div id="log"></div>
+    <div id="vkbd-mode">Normal</div>
+    <div id="vkbd-keys"></div>
   </div>
 
   <script type="module" src="/src/main.ts"></script>

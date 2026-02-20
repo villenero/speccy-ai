@@ -77,8 +77,8 @@ export class Beeper {
     // We don't have that directly, so we use the level before the first event
     // If no events, it's just `this.level`
     if (this.events.length === 0) {
-      const amplitude = this.level ? 0.5 : -0.5;
-      buffer.fill(amplitude);
+      // No beeper activity this frame — output silence
+      buffer.fill(0);
       return buffer;
     }
 

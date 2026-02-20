@@ -25,6 +25,9 @@ export class Spectrum implements Hal {
   // Frame callbacks
   public onFrameComplete?: (frameNumber: number) => void;
 
+  // Hook: called before each CPU step. Return true to skip the step.
+  public onBeforeStep?: () => boolean;
+
   constructor(sampleRate = 48000) {
     this.memory = new Memory();
     this.ula = new ULA(this.memory);
@@ -62,6 +65,7 @@ export class Spectrum implements Hal {
 
     // Execute instructions until we've used up the frame's T-states
     while (this.tStateCount < TSTATES_PER_FRAME) {
+      if (this.onBeforeStep?.()) continue;
       this.cpu.step();
     }
 
